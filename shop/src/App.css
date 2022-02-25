@@ -1,0 +1,9 @@
+.App {
+  text-align: center;
+}
+
+.background {
+  background-image: url("./background_3.jpg");
+  background-size: cover;
+  color: #eeeeee;
+}
