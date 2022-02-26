@@ -6,9 +6,11 @@ import './App.css';
 import { Button, Navbar, NavDropdown, Nav, Jumbotron } from 'react-bootstrap';
 import Data from './data.js';
 
+import {Route} from 'react-router-dom';
+
 function App() {
-  
   let [shoes, shoes변경] = useState(Data);
+
   return (
     <div className="App">
       <Navbar bg="light" expand="lg">
@@ -29,33 +31,55 @@ function App() {
         </Navbar.Collapse>
       </Navbar>
 
-      <Jumbotron className="background">
-        <h1>Season Off!</h1>
-        <p>
-          This is a simple hero unit, a simple jumbotron-style component for calling
-          extra attention to featured content or information.
-        </p>
-        <p>
-          <Button variant="primary">button</Button>
-        </p>
-      </Jumbotron>
+      {/* Route (라우트) 방법 2월 26일 */}
+      <Route exact path="/">
+        <Jumbotron className="background">
+          <h1>Season Off!</h1>
+          <p>
+            This is a simple hero unit, a simple jumbotron-style component for calling
+            extra attention to featured content or information.
+          </p>
+          <p>
+            <Button variant="primary">button</Button>
+          </p>
+        </Jumbotron>
 
-      <div className='container'>
-        <div className='row'>
-        {
-          shoes.map((a, i) => {
-              return <Card shoes={shoes[i]} i={i} key={i}/>
-            }
-          )
-        }
+        <div className='container'>
+          <div className='row'>
+          {
+            shoes.map((a, i) => {
+                return <Card shoes={shoes[i]} i={i} key={i}/>
+              }
+            )
+          }
 
+          </div>
         </div>
-      </div>
+      </Route>
+
+      <Route path="/detail">
+        <div className="container">
+              <div className="row">
+                <div className="col-md-6">
+                  <img src="https://codingapple1.github.io/shop/shoes1.jpg" width="100%" />
+                </div>
+                <div className="col-md-6 mt-4">
+                  <h4 className="pt-5">상품명</h4>
+                  <p>상품설명</p>
+                  <p>120000원</p>
+                  <button className="btn btn-danger">주문하기</button> 
+                </div>
+              </div>
+        </div> 
+      </Route>
+      {/* <Route path='/어쩌구' component={Modal}></Route>*/}
+
       
     </div>
   );
 }
 
+// Component화
 function Card (props) {
   return (
     <div className='col-md-4'>
