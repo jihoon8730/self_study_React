@@ -1,12 +1,13 @@
 /* eslint-disable*/
 
-import {useState} from 'react';
+import React, {useState} from 'react';
 import logo from './logo.svg';
 import './App.css';
 import { Button, Navbar, NavDropdown, Nav, Jumbotron } from 'react-bootstrap';
 import Data from './data.js';
+import Detail from './Detail.js'
 
-import {Route} from 'react-router-dom';
+import {Link,Route,Switch} from 'react-router-dom';
 
 function App() {
   let [shoes, shoes변경] = useState(Data);
@@ -18,8 +19,8 @@ function App() {
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="mr-auto">
-            <Nav.Link href="#home">Home</Nav.Link>
-            <Nav.Link href="#link">Link</Nav.Link>
+            <Nav.Link as={Link} to="/">Home</Nav.Link>
+            <Nav.Link as={Link} to="/detail">Detail</Nav.Link>
             <NavDropdown title="Dropdown" id="basic-nav-dropdown">
               <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
               <NavDropdown.Item href="#action/3.2">Another action</NavDropdown.Item>
@@ -32,47 +33,46 @@ function App() {
       </Navbar>
 
       {/* Route (라우트) 방법 2월 26일 */}
-      <Route exact path="/">
-        <Jumbotron className="background">
-          <h1>Season Off!</h1>
-          <p>
-            This is a simple hero unit, a simple jumbotron-style component for calling
-            extra attention to featured content or information.
-          </p>
-          <p>
-            <Button variant="primary">button</Button>
-          </p>
-        </Jumbotron>
+      <Switch>
 
-        <div className='container'>
-          <div className='row'>
-          {
-            shoes.map((a, i) => {
-                return <Card shoes={shoes[i]} i={i} key={i}/>
-              }
-            )
-          }
+        <Route exact path="/">
+          <Jumbotron className="background">
+            <h1>Season Off!</h1>
+            <p>
+              This is a simple hero unit, a simple jumbotron-style component for calling
+              extra attention to featured content or information.
+            </p>
+            <p>
+              <Button variant="primary">button</Button>
+            </p>
+          </Jumbotron>
 
+          <div className='container'>
+            <div className='row'>
+            {
+              shoes.map((a, i) => {
+                  return <Card shoes={shoes[i]} i={i} key={i}/>
+                }
+              )
+            }
+
+            </div>
           </div>
-        </div>
-      </Route>
+        </Route>
 
-      <Route path="/detail">
-        <div className="container">
-              <div className="row">
-                <div className="col-md-6">
-                  <img src="https://codingapple1.github.io/shop/shoes1.jpg" width="100%" />
-                </div>
-                <div className="col-md-6 mt-4">
-                  <h4 className="pt-5">상품명</h4>
-                  <p>상품설명</p>
-                  <p>120000원</p>
-                  <button className="btn btn-danger">주문하기</button> 
-                </div>
-              </div>
-        </div> 
-      </Route>
-      {/* <Route path='/어쩌구' component={Modal}></Route>*/}
+        <Route path="/detail/:id">
+          <Detail shoes={shoes}/>
+        </Route>
+
+        
+
+        {/* <Route path='/어쩌구' component={Modal}></Route>*/}
+
+        <Route path="/:id">
+          <div>아무거나적었을때 이거 보여주셈</div>
+        </Route>
+
+      </Switch>
 
       
     </div>
@@ -90,6 +90,11 @@ function Card (props) {
     </div>
   )
 }
+
+// props 문법 한번더 2월 28일
+// 1. 보낼이름 ={start이름}
+// 2. 하위컴포넌트에선{props.보낸이름}
+
 
 
 export default App;
