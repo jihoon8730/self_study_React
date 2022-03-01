@@ -1,10 +1,12 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 // History 오브젝트 사용법
 import {useHistory, useParams} from 'react-router-dom';
 import './Detail.scss';
+import {재고context} from './App.js'
 
 // CSS in JS 사용법 2월 28일
 import styled from 'styled-components';
+import axios from 'axios';
 let  박스 = styled.div`
   padding : 20px;
 `;
@@ -32,8 +34,12 @@ function Detail(props){
 
   let [alert, alert변경] = useState(true);
   let [inputData, inputData변경] = useState();
+  let 재고 = useContext(재고context);
 
   useEffect(() => {
+
+    axios.get()
+    
     let 타이머 = setTimeout(() => { alert변경(false)},2000)
     return (function() {
       clearTimeout(타이머)
@@ -75,12 +81,21 @@ function Detail(props){
                   <h4 className="pt-5">{찾은상품.title}</h4>
                   <p>{찾은상품.content}</p>
                   <p>$ {찾은상품.price}</p>
-                  <button className="btn btn-danger">주문하기</button> 
+
+                  <Info 재고={props.재고}></Info>
+
+                  <button className="btn btn-danger" onClick={() => {props.재고변경([9,11,12])}}>주문하기</button> 
                   {/* goBack 명령어 */}
                   <button className="btn btn-danger" onClick={() => { history.push('/'); }}>뒤로가기</button> 
                 </div>
               </div>
         </div> 
+  )
+}
+
+function Info(props){
+  return (
+    <p>재고 : {props.재고[0]}</p>
   )
 }
 

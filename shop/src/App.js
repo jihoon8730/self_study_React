@@ -1,16 +1,27 @@
 /* eslint-disable*/
 
-import React, {useState} from 'react';
+import React, {useContext, useState} from 'react';
 import logo from './logo.svg';
 import './App.css';
 import { Button, Navbar, NavDropdown, Nav, Jumbotron } from 'react-bootstrap';
 import Data from './data.js';
-import Detail from './Detail.js'
+import Detail from './Detail.js';
+import axios from 'axios';
 
 import {Link,Route,Switch} from 'react-router-dom';
 
+import Cart from './cart.js';
+
+// context API 2월 3월1일
+// 1. React.createContext()로 범위생성
+// 2. 같은 값을 공유할 HTML을 <범위>로 싸매기
+// 3.useContext(범위)로 공유된 값 사용하기
+export let 재고context = React.createContext();
+
 function App() {
+
   let [shoes, shoes변경] = useState(Data);
+  let [재고, 재고변경] = useState([10,11,12]);
 
   return (
     <div className="App">
@@ -48,6 +59,11 @@ function App() {
           </Jumbotron>
 
           <div className='container'>
+
+            {/* context API 2월 3월1일 */}
+            {/* 같은 값을 공유할 HTML을 <범위>로 싸매기 */}
+            <재고context.Provider value={재고}>
+
             <div className='row'>
             {
               shoes.map((a, i) => {
@@ -55,15 +71,37 @@ function App() {
                 }
               )
             }
-
             </div>
+
+            </재고context.Provider>
+
+            {/* axios get요청 2월 28일 */}
+            <button className='btn btn-primary' onClick={()=>{
+
+              axios.post('서버URL',{id:'codingapple',pw:1234});
+
+              axios.get('https://codingapple1.github.io/shop/data2.json')
+              .then((result) => {
+                console.log(result.data);
+                shoes변경([...shoes, ...result.data]);
+              })
+              .catch(()=>{ 
+                console.log('실패했어요')
+              })
+
+            }}>더보기</button>
           </div>
         </Route>
 
         <Route path="/detail/:id">
-          <Detail shoes={shoes}/>
+        <재고context.Provider>
+          <Detail shoes={shoes} 재고={재고} 재고변경={재고변경}/>
+        </재고context.Provider>
         </Route>
 
+        <Route path="/cart">
+          <Cart></Cart>
+        </Route>
         
 
         {/* <Route path='/어쩌구' component={Modal}></Route>*/}
@@ -81,14 +119,24 @@ function App() {
 
 // Component화
 function Card (props) {
+
+  let 재고 = useContext(재고context);
+
   return (
     <div className='col-md-4'>
       <img src={ 'https://codingapple1.github.io/shop/shoes'+ (props.i +1) +'.jpg' } width='100%' />
       <h4>{props.shoes.title}</h4>
       <p>{props.shoes.content}</p>
       <p>$ {props.shoes.price}</p>
+      <Test></Test>
+      
     </div>
   )
+}
+function Test(){
+  // 3.useContext(범위)로 공유된 값 사용하기
+  let 재고 = useContext(재고context);
+  return <p>{재고[0]}</p>
 }
 
 // props 문법 한번더 2월 28일
