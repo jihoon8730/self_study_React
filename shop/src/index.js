@@ -9,7 +9,18 @@ import {BrowserRouter} from 'react-router-dom';
 
 // redux 세팅 3월 1일
 import {Provider} from 'react-redux';
-import { createStore } from 'redux';
+import { combineReducers, createStore } from 'redux';
+
+let alert초기값 = true;
+
+function reducer2(state = alert초기값, 액션) {
+  if (액션.type === 'alert닫기') {
+    state = false;
+    return state;
+  } else {
+  return state
+  }
+}
 
 let 초기값 = [
   { id: 0, name : '멋진신발', quan : 2}, 
@@ -17,15 +28,34 @@ let 초기값 = [
 ];
 
   function reducer(state = 초기값, 액션) {
-    if ( 액션.type === '수량증가' ) {
+    if (액션.type === '항목추가' ) {
+
+      // state안에 id : 액션.데이터인게 있냐??
+
+      let found = state.findIndex((a)=>{ return a.id === 액션.데이터.id});
+
+      if (found >= 0) {
+        
+        let copy = [...state];
+        copy[found].quan++;
+        return copy
+
+      } else {
+        let copy = [...state];
+        copy.push(액션.데이터);
+        return copy
+      }
+
+    } else if ( 액션.type === '수량증가' ) {
 
       let copy = [...state];
-      copy[0].quan++;
+      copy[액션.데이터].quan++;
       return copy
 
     } else if (액션.type === '수량감소') {
+      
       let copy = [...state];
-      copy[0].quan--;
+      copy[액션.데이터].quan--;
       return copy
     } 
     
@@ -35,7 +65,8 @@ let 초기값 = [
       
   }
 
-  let store = createStore(reducer);
+  let store = createStore(combineReducers({reducer,reducer2}));
+
 
 ReactDOM.render(
   <React.StrictMode>
@@ -44,7 +75,6 @@ ReactDOM.render(
       <App />
     </Provider>
     </BrowserRouter>
-    
   </React.StrictMode>,
   document.getElementById('root')
 );

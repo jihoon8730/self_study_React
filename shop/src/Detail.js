@@ -3,6 +3,7 @@ import React, {useContext, useEffect, useState} from 'react';
 import {useHistory, useParams} from 'react-router-dom';
 import './Detail.scss';
 import {재고context} from './App.js'
+import {connect} from 'react-redux';
 
 // CSS in JS 사용법 2월 28일
 import styled from 'styled-components';
@@ -35,6 +36,17 @@ function Detail(props){
   let [alert, alert변경] = useState(true);
   let [inputData, inputData변경] = useState();
   let 재고 = useContext(재고context);
+
+  useEffect(() => { 
+    let arr = localStorage.getItem('watched');
+    if(arr == null) { arr = [] } else { arr = JSON.parse(arr) }
+
+    arr.push(id);
+    arr = new Set(arr);
+    arr = [...arr]
+
+    localStorage.setItem('watched', JSON.stringify(arr));
+  },[] );
 
   useEffect(() => {
 
@@ -84,7 +96,11 @@ function Detail(props){
 
                   <Info 재고={props.재고}></Info>
 
-                  <button className="btn btn-danger" onClick={() => {props.재고변경([9,11,12])}}>주문하기</button> 
+                  <button className="btn btn-danger" onClick={() => {
+                    props.재고변경([9,11,12]);
+                    props.dispatch({type:'항목추가', 데이터:{id:찾은상품.id, name:찾은상품.title, quan : 1}});
+                    history.push('/cart');
+                  }}>주문하기</button> 
                   {/* goBack 명령어 */}
                   <button className="btn btn-danger" onClick={() => { history.push('/'); }}>뒤로가기</button> 
                 </div>
@@ -99,4 +115,12 @@ function Info(props){
   )
 }
 
-export default Detail;
+function state를props화(state){
+  return {
+    state : state.reducer,
+    alert열렸니 : state.reducer2
+  }
+}
+
+export default connect(state를props화)(Detail)
+

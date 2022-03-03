@@ -1,16 +1,18 @@
 /* eslint-disable*/
 
-import React, {useContext, useState} from 'react';
+import React, {useContext, useState, lazy, Suspense} from 'react';
 import logo from './logo.svg';
 import './App.css';
 import { Button, Navbar, NavDropdown, Nav, Jumbotron } from 'react-bootstrap';
 import Data from './data.js';
-import Detail from './Detail.js';
+// import Detail from './Detail.js';
+let Detail = lazy(()=> import('./Detail.js') );
 import axios from 'axios';
 
 import {Link,Route,Switch} from 'react-router-dom';
 
 import Cart from './cart.js';
+import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 
 // context API 2월 3월1일
 // 1. React.createContext()로 범위생성
@@ -67,7 +69,7 @@ function App() {
             <div className='row'>
             {
               shoes.map((a, i) => {
-                  return <Card shoes={shoes[i]} i={i} key={i}/>
+                  return <Card shoes={shoes[i]} i={i} key={i} />
                 }
               )
             }
@@ -95,7 +97,9 @@ function App() {
 
         <Route path="/detail/:id">
         <재고context.Provider>
+          <Suspense fallback={<div>로딩중이에요</div>}>
           <Detail shoes={shoes} 재고={재고} 재고변경={재고변경}/>
+          </Suspense>
         </재고context.Provider>
         </Route>
 
@@ -121,9 +125,10 @@ function App() {
 function Card (props) {
 
   let 재고 = useContext(재고context);
+  let history = useHistory();
 
   return (
-    <div className='col-md-4'>
+    <div className='col-md-4' onClick={ () => { history.push('/detail/' + props.shoes.id) }}>
       <img src={ 'https://codingapple1.github.io/shop/shoes'+ (props.i +1) +'.jpg' } width='100%' />
       <h4>{props.shoes.title}</h4>
       <p>{props.shoes.content}</p>
